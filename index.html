@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>drag</title>
+  <script src="draggable.js"></script>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    li{
+      list-style: none;
+    }
+    .clearfix:before, .clearfix:after{
+      content: "";
+      display: table;
+    }
+    .clearfix:after{
+      clear: both;
+    }
+    .box{
+      width: 273px;
+      margin: 100px auto 0;
+    }
+    .block{
+      float: left;
+      width: 90px;
+      height: 150px;
+      margin-right: -1px;
+      margin-bottom: -1px;
+      border: 1px solid #000;
+      background-color: yellow;
+      line-height: 150px;
+      vertical-align: middle;
+      text-align: center;
+      font-size: 3em;
+      cursor: default;
+      transition: all 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <ul class="clearfix" id="dragBox">
+      <li class="block">01</li>
+      <li class="block">02</li>
+      <li class="block">03</li>
+      <li class="block">04</li>
+      <li class="block"><span>05</span></li>
+      <li class="block">06</li>
+      <li class="block">07</li>
+      <li class="block">08</li>
+      <li class="block">09</li>
+    </ul>
+  </div>
+
+  <script>
+    Drag("#dragBox");
+  </script>
+</body>
+</html>
