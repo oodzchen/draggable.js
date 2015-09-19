@@ -12,11 +12,12 @@
     li{
       list-style: none;
     }
-    .clearfix:before, .clearfix:after{
-      content: "";
-      display: table;
-    }
     .clearfix:after{
+      content: "\20";
+      display: block;
+      height: 0;
+      font-size: 0;
+      visibility: hidden;
       clear: both;
     }
     .box{
@@ -56,7 +57,7 @@
   </div>
 
   <script>
-    Drag("#dragBox");
+    Draggable(document.getElementById("dragBox"));
   </script>
 </body>
 </html>
