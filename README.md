@@ -25,14 +25,17 @@ Draggable(document.getElementById('dragBox'));
 ##Config Options
 The second parameter of the Draggable function is an object of config options:
 - **positioned** Boolean *( default: true )* - set the draggable elements positioned
-
+- **onDrag** Function - runs when start drag
+- **onDrop** Function - runs when end drag
 
 ##Example
 ```javascript
 var box = document.getElementById('dragBox');
 
 Draggable(box, {
-	positioned: true
+	positioned: true,
+	onDrag: function(index, elem){},
+	onDrop: function(index, elem){}
 });
 ```
 
@@ -40,4 +43,4 @@ Draggable(box, {
 [http://oodzchen.com/lab/draggablejs/](http://oodzchen.com/lab/draggablejs/)
 
 ##Browser Support
-Compatible with major modern desktop browsers(Firefox, Chrome, IE8+).
+Compatible with major desktop browsers(Firefox, Chrome, IE8+).

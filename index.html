@@ -58,7 +58,13 @@
 
   <script>
     Draggable(document.getElementById("dragBox"), {
-      positioned: true
+      positioned: true,
+      onDrag: function(index, elem){
+        console.log("drag", index);
+      },
+      onDrop: function(index, elem){
+        console.log("drop", index);
+      }
     });
   </script>
 </body>
