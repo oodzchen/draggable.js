@@ -1,7 +1,9 @@
 /*
  * draggable.js
- * author: Lin Chen
- * todo: make it configurable ...
+ * 
+ * author: Lin Chen https://github.com/oodzchen
+ * Copyright 2013, MIT License
+ *
  */
 
 function Draggable(container, options) {

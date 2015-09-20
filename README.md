@@ -43,4 +43,7 @@ Draggable(box, {
 [http://oodzchen.com/lab/draggablejs/](http://oodzchen.com/lab/draggablejs/)
 
 ##Browser Support
-Compatible with major desktop browsers(Firefox, Chrome, IE8+).
+Compatible with major desktop browsers (Firefox, Chrome, IE8+).
+
+##License
+Copyright (c) 2015 Lin Chen Licensed under the [The MIT License (MIT)](https://opensource.org/licenses/MIT)
