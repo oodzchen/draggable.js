@@ -2,7 +2,7 @@
  * draggable.js
  * 
  * author: Lin Chen https://github.com/oodzchen
- * Copyright 2013, MIT License
+ * Copyright 2015, MIT License
  *
  */
 
