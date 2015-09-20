@@ -45,7 +45,7 @@
   <div class="box">
     <ul class="clearfix" id="dragBox">
       <li class="block">01</li>
-      <li class="block">02</li>
+      <li class="block"><a href="https://github.com/oodzchen/draggable.js" target="_blank">02</a></li>
       <li class="block">03</li>
       <li class="block">04</li>
       <li class="block"><span>05</span></li>
@@ -57,7 +57,9 @@
   </div>
 
   <script>
-    Draggable(document.getElementById("dragBox"));
+    Draggable(document.getElementById("dragBox"), {
+      positioned: true
+    });
   </script>
 </body>
 </html>

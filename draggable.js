@@ -10,7 +10,9 @@ function Draggable(container, options) {
 
   if (!container) return;
 
-  var lowVersionIE = navigator.userAgent.match(/MSIE 8|MSIE 7/);
+  var options = options || {};
+  var isPositioned = typeof options.positioned === "boolean" ? options.positioned : true;
+  var olderIE = navigator.userAgent.match(/MSIE 8|MSIE 7/);
   var box = container.length ? container[0] : container;
   var childNodelist = box.children || (function(element) {
     var clone = element.cloneNode(true);
@@ -23,7 +25,7 @@ function Draggable(container, options) {
     return child;
   })(box);
 
-  var toArray = !lowVersionIE ? Array.prototype.slice : function() {
+  var toArray = !olderIE ? Array.prototype.slice : function() {
     var ArrayLike = this;
     var result = [];
 
@@ -76,15 +78,15 @@ function Draggable(container, options) {
 
   var elements = toArray.call(childNodelist);
   var isStart = false;
-  var boxLeft = box.offsetLeft;
-  var boxTop = box.offsetTop;
+  var boxLeft = isPositioned ? box.offsetLeft : 0;
+  var boxTop = isPositioned ? box.offsetTop : 0;
   var distanceX, distanceY, dragingElement, fromElement, cloneElement, beforeList, beforePositions;
 
   init();
 
   function init() {
 
-    setPositions();
+    if(isPositioned) setPositions();
 
     eventBind();
 
@@ -119,7 +121,7 @@ function Draggable(container, options) {
     var evX = 0,
       evY = 0;
 
-    if (lowVersionIE) {
+    if (olderIE) {
 
       if (ev.button !== 1) return;
 
@@ -144,7 +146,7 @@ function Draggable(container, options) {
     distanceX = evX - (boxLeft + dragingElement.offsetLeft);
     distanceY = evY - (boxTop + dragingElement.offsetTop);
     beforePositions = getPositions(elements);
-    beforeList = getStaticList(elements);
+    beforeList = getCurrentList(elements);
 
     addListener(document, 'mousemove', onMouseMove);
     addListener(document, 'mouseup', onMouseUp);
@@ -155,7 +157,7 @@ function Draggable(container, options) {
     var evX = 0,
       evY = 0;
 
-    if (lowVersionIE) {
+    if (olderIE) {
       ev.returnValue = false;
 
       evX = ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
@@ -175,6 +177,7 @@ function Draggable(container, options) {
       isStart = true;
 
       cloneElement = dragingElement.cloneNode(true);
+      cloneElement.style.position = "absolute";
       cloneElement.style.left = boxLeft + dragingElement.offsetLeft + "px";
       cloneElement.style.top = boxTop + dragingElement.offsetTop + "px";
       dragingElement.style.visibility = "hidden";
@@ -204,6 +207,8 @@ function Draggable(container, options) {
 
     dragingElement.style.transition = "";
     dragingElement = fromElement = cloneElement = null;
+
+    if(olderIE && ev.srcElement.tagName === "A") ev.srcElement.click();
 
     removeListener(document, 'mousemove', onMouseMove);
     removeListener(document, 'mouseup', onMouseUp);
@@ -252,34 +257,33 @@ function Draggable(container, options) {
   function rearrange(toElement) {
     var fromIndex = getIndex(fromElement);
     var toIndex = getIndex(toElement);
+    var dir = fromIndex < toIndex ? 1 : -1;
 
     // console.log("from: ", fromIndex, "to: ", toIndex);
 
-    if (fromIndex < toIndex) {
+    if(dir > 0){
 
-      if (lowVersionIE && toIndex === beforeList.length - 1) {
+      if (olderIE && toIndex === beforeList.length - 1) {
         box.appendChild(elements[fromIndex]);
       } else {
         box.insertBefore(elements[fromIndex], elements[toIndex + 1]);
       }
 
-      elements = toArray.call(childNodelist);
-
-      for (var i = fromIndex; i < toIndex; i++) {
-        elements[i].style.left = beforePositions[i].left + "px";
-        elements[i].style.top = beforePositions[i].top + "px";
-      }
-
-    } else {
+    }else{
 
       box.insertBefore(elements[fromIndex], elements[toIndex]);
 
-      elements = toArray.call(childNodelist);
+    }
 
-      for (var i = fromIndex; i > toIndex; i--) {
-        elements[i].style.left = beforePositions[i].left + "px";
-        elements[i].style.top = beforePositions[i].top + "px";
-      }
+    elements = getCurrentList(childNodelist);
+
+    var i = fromIndex;
+    while(i !== toIndex){
+
+      elements[i].style.left = beforePositions[i].left + "px";
+      elements[i].style.top = beforePositions[i].top + "px";
+
+      i += dir;
 
     }
 
@@ -301,7 +305,7 @@ function Draggable(container, options) {
     return result;
   }
 
-  function getStaticList(elementArray) {
+  function getCurrentList(elementArray) {
     return toArray.call(elementArray);
   }
 
@@ -336,7 +340,7 @@ if(window.jQuery){
   (function($){
     $.fn.Draggable = function(options){
       return this.each(function(index, el) {
-       Draggable(el[0], options); 
+       Draggable(el, options);
       });
     }
   })(window.jQuery)
