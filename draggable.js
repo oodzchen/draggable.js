@@ -84,7 +84,8 @@ function Draggable(container, options) {
   var isStart = false;
   var boxLeft = isPositioned ? box.offsetLeft : 0;
   var boxTop = isPositioned ? box.offsetTop : 0;
-  var distanceX, distanceY, dragingElement, fromElement, cloneElement, beforeList, beforePositions;
+  var primaryPositions = [];
+  var distanceX, distanceY, dragingElement, fromElement, cloneElement, beforeList;
 
   init();
 
@@ -104,6 +105,10 @@ function Draggable(container, options) {
 
       temp.style.left = temp.offsetLeft + "px";
       temp.style.top = temp.offsetTop + "px";
+      primaryPositions.push({
+        left: temp.offsetLeft,
+        top: temp.offsetTop
+      });
 
       setTimeout((function(el) {
         return function() {
@@ -152,7 +157,6 @@ function Draggable(container, options) {
 
     distanceX = evX - (boxLeft + dragingElement.offsetLeft);
     distanceY = evY - (boxTop + dragingElement.offsetTop);
-    beforePositions = getPositions(elements);
     beforeList = getCurrentList(elements);
 
     addListener(document, 'mousemove', onMouseMove);
@@ -244,7 +248,7 @@ function Draggable(container, options) {
 
     var i = index;
     var el = beforeList[i];
-    var pos = beforePositions[i];
+    var pos = primaryPositions[i];
 
     var elLeft = boxLeft + pos.left;
     var elRight = elLeft + el.offsetWidth;
@@ -288,32 +292,21 @@ function Draggable(container, options) {
 
     elements = getCurrentList(childNodelist);
 
+    if(!isPositioned) return;
+
     var i = fromIndex;
     while(i !== toIndex){
 
-      elements[i].style.left = beforePositions[i].left + "px";
-      elements[i].style.top = beforePositions[i].top + "px";
+      elements[i].style.left = primaryPositions[i].left + "px";
+      elements[i].style.top = primaryPositions[i].top + "px";
 
       i += dir;
 
     }
 
-    dragingElement.style.left = beforePositions[i].left + "px";
-    dragingElement.style.top = beforePositions[i].top + "px";
+    dragingElement.style.left = primaryPositions[i].left + "px";
+    dragingElement.style.top = primaryPositions[i].top + "px";
 
-  }
-
-  function getPositions(elementArray) {
-    var result = [];
-
-    for (var i = 0; i < elementArray.length; i++) {
-      result.push({
-        left: elementArray[i].offsetLeft,
-        top: elementArray[i].offsetTop
-      });
-    }
-
-    return result;
   }
 
   function getCurrentList(elementArray) {
