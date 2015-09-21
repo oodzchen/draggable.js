@@ -59,11 +59,11 @@
   <script>
     Draggable(document.getElementById("dragBox"), {
       positioned: true,
-      onDrag: function(index, elem){
-        console.log("drag", index);
+      onDrag: function(fromIndex, cloneElem){
+        console.log("drag", fromIndex, cloneElem);
       },
-      onDrop: function(index, elem){
-        console.log("drop", index);
+      onDrop: function(toIndex, dropElem){
+        console.log("drop", toIndex, dropElem);
       }
     });
   </script>

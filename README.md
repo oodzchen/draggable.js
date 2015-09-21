@@ -34,8 +34,8 @@ var box = document.getElementById('dragBox');
 
 Draggable(box, {
 	positioned: true,
-	onDrag: function(index, elem){},
-	onDrop: function(index, elem){}
+	onDrag: function(fromIndex, cloneElem){},
+	onDrop: function(toIndex, dropElem){}
 });
 ```
 

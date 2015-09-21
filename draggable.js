@@ -19,11 +19,10 @@ function Draggable(container, options) {
   var olderIE = navigator.userAgent.match(/MSIE 8|MSIE 7/);
   var box = container.length ? container[0] : container;
   var childNodelist = box.children || (function(element) {
-    var clone = element.cloneNode(true);
-    var child = clone.childNodes;
+    var child = element.childNodes;
 
     for (var i = 0; i < child.length; i++) {
-      if (!(child[i] instanceof Element)) clone.removeChild(child[i]);
+      if (!(child[i] instanceof Element)) element.removeChild(child[i]);
     }
 
     return child;
@@ -182,7 +181,7 @@ function Draggable(container, options) {
       evY = ev.pageY;
     }
 
-    var toElement = getElementByPosition(evX, evY, 0);
+    var toElement = getElementByPosition(evX, evY);
 
     if (!isStart) {
       isStart = true;
@@ -194,7 +193,8 @@ function Draggable(container, options) {
       dragingElement.style.visibility = "hidden";
       document.body.appendChild(cloneElement);
 
-      onDragFn.call(this, getIndex(dragingElement), dragingElement);
+      var dragIndex = getIndex(dragingElement);
+      onDragFn.call(box, dragIndex, cloneElement);
 
     } else {
 
@@ -217,7 +217,8 @@ function Draggable(container, options) {
       document.body.removeChild(cloneElement);
       isStart = false;
       
-      onDropFn.call(this, getIndex(dragingElement), dragingElement);
+      var dropIndex = getIndex(fromElement);
+      onDropFn.call(box, dropIndex, childNodelist[dropIndex]);
     }
 
     dragingElement.style.transition = "";
@@ -242,7 +243,7 @@ function Draggable(container, options) {
 
   }
 
-  function getElementByPosition(x, y, index) {
+  function getElementByPosition(x, y) {
 
     var i = elements.length;
 
