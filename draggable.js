@@ -244,24 +244,25 @@ function Draggable(container, options) {
 
   function getElementByPosition(x, y, index) {
 
-    if (index === elements.length) return null;
+    var i = elements.length;
 
-    var i = index;
-    var el = beforeList[i];
-    var pos = primaryPositions[i];
+    while(i--){
 
-    var elLeft = boxLeft + pos.left;
-    var elRight = elLeft + el.offsetWidth;
-    var elTop = boxTop + pos.top;
-    var elBottom = elTop + el.offsetHeight;
+      var el = beforeList[i];
+      var pos = primaryPositions[i];
 
-    if (x > elLeft && x < elRight && y > elTop && y < elBottom) {
-      return beforeList[i];
+      var elLeft = boxLeft + pos.left;
+      var elRight = elLeft + el.offsetWidth;
+      var elTop = boxTop + pos.top;
+      var elBottom = elTop + el.offsetHeight;
 
-    } else {
+      if (x > elLeft && x < elRight && y > elTop && y < elBottom) {
+        return beforeList[i];
+      }
 
-      return getElementByPosition(x, y, i + 1);
     }
+
+    return null;
 
   }
 
