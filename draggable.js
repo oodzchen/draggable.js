@@ -18,6 +18,7 @@ function Draggable(container, options) {
   var onDropFn = options.onDrop || function(){};
   var olderIE = navigator.userAgent.match(/MSIE 8|MSIE 7/);
   var box = container.length ? container[0] : container;
+  var dragElements = (options.dragElements && options.dragElements.length) ? options.dragElements : box;
   var childNodelist = box.children || (function(element) {
     var child = element.childNodes;
 
@@ -83,14 +84,15 @@ function Draggable(container, options) {
   var isStart = false;
   var boxLeft = isPositioned ? box.offsetLeft : 0;
   var boxTop = isPositioned ? box.offsetTop : 0;
-  var primaryPositions = [];
-  var distanceX, distanceY, dragingElement, fromElement, cloneElement, beforeList;
+  var distanceX, distanceY, dragingElement, fromElement, cloneElement, beforeList, primaryPositions;
 
   init();
 
   function init() {
 
     if(isPositioned) setPositions();
+
+    primaryPositions = getPrimaryPositions(childNodelist);
 
     eventBind();
 
@@ -104,10 +106,6 @@ function Draggable(container, options) {
 
       temp.style.left = temp.offsetLeft + "px";
       temp.style.top = temp.offsetTop + "px";
-      primaryPositions.push({
-        left: temp.offsetLeft,
-        top: temp.offsetTop
-      });
 
       setTimeout((function(el) {
         return function() {
@@ -119,7 +117,14 @@ function Draggable(container, options) {
   }
 
   function eventBind() {
-    addListener(box, 'mousedown', onMouseDown);
+
+    if(dragElements === box){
+      addListener(box, 'mousedown', onMouseDown);
+    }else{
+      for(var i = 0; i < dragElements.length; i++){
+        addListener(dragElements[i], 'mousedown', onMouseDown);
+      }
+    }
   }
 
   function onMouseDown(ev) {
@@ -313,6 +318,19 @@ function Draggable(container, options) {
 
   function getCurrentList(elementArray) {
     return toArray.call(elementArray);
+  }
+
+  function getPrimaryPositions(elements){
+    var result = [];
+
+    for(var i = 0; i < elements.length; i++){
+      result.push({
+        left: elements[i].offsetLeft,
+        top: elements[i].offsetTop
+      });
+    }
+
+    return result;
   }
 
   // utilities
