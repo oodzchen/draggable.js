@@ -156,8 +156,8 @@ function Draggable(container, options) {
     fromElement = dragingElement = getDragingElement(target);
     dragingElement.style.transition = "none";
 
-    var scrollTop = getScroll(box, 0, true);
-    var scrollLeft = getScroll(box, 0, false);
+    var scrollTop = getScroll(box, true);
+    var scrollLeft = getScroll(box, false);
 
     boxLeft = isPositioned ? box.offsetLeft - scrollLeft : 0;
     boxTop = isPositioned ? box.offsetTop - scrollTop : 0;
@@ -336,16 +336,17 @@ function Draggable(container, options) {
     return result;
   }
 
-  function getScroll(element, num, isTop){
-    var all = num || 0;
+  function getScroll(element, isTop){
     var scroll = isTop ? element.scrollTop : element.scrollLeft;
+
+    if(element === document.documentElement || element === document.body) return 0;
+
     if(scroll){
-      all += scroll;
+      return scroll;
+    }else{
+      return getScroll(element.parentNode, isTop);
     }
 
-    if(element === document.documentElement) return all;
-
-    return getScroll(element.parentNode, all, isTop);
   }
 
   // utilities
