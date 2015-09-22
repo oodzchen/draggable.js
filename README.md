@@ -25,6 +25,7 @@ Draggable(document.getElementById('dragBox'));
 ##Config Options
 The second parameter of the Draggable function is an object of config options:
 - **positioned** Boolean *( default: true )* - set the draggable elements positioned
+- **dragElements** Array or Nodelist - a collection of DOM elements, which will be the drggable area
 - **onDrag** Function - runs when start drag
 - **onDrop** Function - runs when end drag
 
@@ -34,6 +35,7 @@ var box = document.getElementById('dragBox');
 
 Draggable(box, {
 	positioned: true,
+	dragElements: box.getElementsByTagName('div'),
 	onDrag: function(fromIndex, cloneElem){},
 	onDrop: function(toIndex, dropElem){}
 });
