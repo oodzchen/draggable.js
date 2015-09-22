@@ -1,5 +1,5 @@
 /*
- * draggable.js
+ * draggable.js v1.1
  * 
  * author: Lin Chen https://github.com/oodzchen
  * Copyright 2015, MIT License
@@ -16,7 +16,20 @@ function Draggable(container, options) {
   var isPositioned = typeof options.positioned === "boolean" ? options.positioned : true;
   var onDragFn = options.onDrag || function(){};
   var onDropFn = options.onDrop || function(){};
-  var olderIE = navigator.userAgent.match(/MSIE 8|MSIE 7/);
+  var olderIE = !!navigator.userAgent.match(/MSIE 8|MSIE 7/);
+  var isMobile = !!navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i);
+  var events = isMobile ? {
+    down: 'touchstart',
+    move: 'touchmove',
+    up: 'touchend'
+  } : {
+    down: 'mousedown',
+    move: 'mousemove',
+    up: 'mouseup'
+  };
+
+  console.log(events);
+
   var box = container.length ? container[0] : container;
   var dragElements = (options.dragElements && options.dragElements.length) ? options.dragElements : box;
   var childNodelist = box.children || (function(element) {
@@ -119,41 +132,47 @@ function Draggable(container, options) {
   function eventBind() {
 
     if(dragElements === box){
-      addListener(box, 'mousedown', onMouseDown);
+      addListener(box, events.down, onMouseDown);
     }else{
       for(var i = 0; i < dragElements.length; i++){
-        addListener(dragElements[i], 'mousedown', onMouseDown);
+        addListener(dragElements[i], events.down, onMouseDown);
       }
     }
+
   }
 
   function onMouseDown(ev) {
-    var ev = ev || window.event;
+    var _ev = isMobile ? ev.changedTouches[0] : (ev || window.event);
 
-    var target = ev.target || ev.srcElement;
+    var target = _ev.target || ev.srcElement;
     var evX = 0,
       evY = 0;
 
     if (olderIE) {
 
-      if (ev.button !== 1) return;
+      if (_ev.button !== 1) return;
 
-      ev.returnValue = false;
+      _ev.returnValue = false;
 
-      evX = ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-      evY = ev.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+      evX = _ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+      evY = _ev.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 
     } else {
 
-      if (ev.button !== 0) return;
+      if (!isMobile && _ev.button !== 0 || ev.touches.length > 1) return;
 
       ev.preventDefault();
 
-      evX = ev.pageX;
-      evY = ev.pageY;
+      evX = _ev.pageX;
+      evY = _ev.pageY;
     }
 
+    console.log(ev);
+
     fromElement = dragingElement = getDragingElement(target);
+
+    if(dragingElement === null) return;
+
     dragingElement.style.transition = "none";
 
     var scrollTop = getScroll(box, true);
@@ -166,35 +185,39 @@ function Draggable(container, options) {
     distanceY = evY - (boxTop + dragingElement.offsetTop);
     beforeList = getCurrentList(elements);
 
-    addListener(document, 'mousemove', onMouseMove);
-    addListener(document, 'mouseup', onMouseUp);
+    addListener(document, events.move, onMouseMove);
+    addListener(document, events.up, onMouseUp);
   }
 
   function onMouseMove(ev) {
-    var ev = ev || window.event;
+    var _ev = isMobile ? ev.changedTouches[0] : (ev || window.event);
     var evX = 0,
       evY = 0;
 
     if (olderIE) {
-      ev.returnValue = false;
+      _ev.returnValue = false;
 
-      evX = ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-      evY = ev.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+      evX = _ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+      evY = _ev.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 
     } else {
 
       ev.preventDefault();
 
-      evX = ev.pageX;
-      evY = ev.pageY;
+      evX = _ev.pageX;
+      evY = _ev.pageY;
     }
 
     var toElement = getElementByPosition(evX, evY);
 
     if (!isStart) {
+
+      if(dragingElement === null) return;
+
       isStart = true;
 
       cloneElement = dragingElement.cloneNode(true);
+      
       cloneElement.style.position = "absolute";
       cloneElement.style.left = boxLeft + dragingElement.offsetLeft + "px";
       cloneElement.style.top = boxTop + dragingElement.offsetTop + "px";
@@ -220,6 +243,12 @@ function Draggable(container, options) {
   function onMouseUp(ev) {
     var ev = ev || window.event;
 
+    if(isMobile){
+      var nowElement = getDragingElement(ev.changedTouches[0].target);
+
+      if (ev.touches.length > 1 || nowElement !== dragingElement || dragingElement === null) return;
+    }
+
     if (isStart) {
       dragingElement.style.visibility = "";
       document.body.removeChild(cloneElement);
@@ -229,16 +258,19 @@ function Draggable(container, options) {
       onDropFn.call(box, dropIndex, childNodelist[dropIndex]);
     }
 
+    removeListener(document, 'mousemove', onMouseMove);
+
     dragingElement.style.transition = "";
     dragingElement = fromElement = cloneElement = null;
 
     if(olderIE && ev.srcElement.tagName === "A") ev.srcElement.click();
 
-    removeListener(document, 'mousemove', onMouseMove);
     removeListener(document, 'mouseup', onMouseUp);
   }
 
   function getDragingElement(clickedElement) {
+
+    if(!box.contains(clickedElement)) return null;
 
     if (clickedElement.parentNode === box) {
 
