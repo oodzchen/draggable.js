@@ -144,7 +144,7 @@ function Draggable(container, options) {
   function onMouseDown(ev) {
     var _ev = isMobile ? ev.changedTouches[0] : (ev || window.event);
 
-    var target = _ev.target || ev.srcElement;
+    var target = _ev.target || _ev.srcElement;
     var evX = 0,
       evY = 0;
 
@@ -159,7 +159,7 @@ function Draggable(container, options) {
 
     } else {
 
-      if (!isMobile && _ev.button !== 0 || ev.touches.length > 1) return;
+      if (!isMobile && _ev.button !== 0 || _ev.touches && _ev.touches.length > 1) return;
 
       ev.preventDefault();
 
