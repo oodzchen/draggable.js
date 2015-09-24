@@ -28,8 +28,6 @@ function Draggable(container, options) {
     up: 'mouseup'
   };
 
-  console.log(events);
-
   var box = container.length ? container[0] : container;
   var dragElements = (options.dragElements && options.dragElements.length) ? options.dragElements : box;
   var childNodelist = box.children || (function(element) {
@@ -138,7 +136,7 @@ function Draggable(container, options) {
         addListener(dragElements[i], events.down, onMouseDown);
       }
     }
-
+    
   }
 
   function onMouseDown(ev) {
@@ -166,8 +164,6 @@ function Draggable(container, options) {
       evX = _ev.pageX;
       evY = _ev.pageY;
     }
-
-    console.log(ev);
 
     fromElement = dragingElement = getDragingElement(target);
 
@@ -315,8 +311,6 @@ function Draggable(container, options) {
     var fromIndex = getIndex(fromElement);
     var toIndex = getIndex(toElement);
     var dir = fromIndex < toIndex ? 1 : -1;
-
-    // console.log("from: ", fromIndex, "to: ", toIndex);
 
     if(dir > 0){
 
