@@ -31,6 +31,7 @@
       height: 150px;
       margin-right: -1px;
       margin-bottom: -1px;
+      margin: 10px;
       border: 1px solid #000;
       background-color: yellow;
       line-height: 150px;
@@ -59,7 +60,7 @@
 
   <script>
     Draggable(document.getElementById("dragBox"), {
-      positioned: true,
+      positioned: false,
       onDrag: function(fromIndex, cloneElem){
         console.log("drag", fromIndex, cloneElem);
       },

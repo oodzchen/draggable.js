@@ -117,8 +117,8 @@ function Draggable(container, options) {
     for (var i = 0; i < elements.length; i++) {
       var temp = elements[i];
 
-      temp.style.left = temp.offsetLeft + "px";
-      temp.style.top = temp.offsetTop + "px";
+      temp.style.left = temp.offsetLeft - Number(getCss(temp, 'margin-left').replace(/[^\d]+/, '')) + "px";
+      temp.style.top = temp.offsetTop - Number(getCss(temp, 'margin-top').replace(/[^\d]+/, '')) + "px";
 
       setTimeout((function(el) {
         return function() {
@@ -360,8 +360,8 @@ function Draggable(container, options) {
 
     for(var i = 0; i < elements.length; i++){
       result.push({
-        left: elements[i].offsetLeft,
-        top: elements[i].offsetTop
+        left: elements[i].offsetLeft - Number(getCss(elements[i], 'margin-left').replace(/[^\d]+/, '')),
+        top: elements[i].offsetTop - Number(getCss(elements[i], 'margin-top').replace(/[^\d]+/, ''))
       });
     }
 
@@ -404,6 +404,18 @@ function Draggable(container, options) {
       elemnet['on' + type] = null;
     }
 
+  }
+
+  function getCss(element, property){
+    var isSupport = 'getComputedStyle' in window;
+    var cssObj = isSupport ? window.getComputedStyle(element, null) : element.currentStyle;
+
+    if(!!property){
+      return isSupport ? cssObj.getPropertyValue(property) : cssObj[property];
+    }else{
+      return cssObj;
+    }
+    
   }
 
 }
