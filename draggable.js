@@ -173,9 +173,10 @@ function Draggable(container, options) {
 
     var scrollTop = getScroll(box, true);
     var scrollLeft = getScroll(box, false);
+    var rect = box.getBoundingClientRect();
 
-    boxLeft = isPositioned ? box.offsetLeft - scrollLeft : 0;
-    boxTop = isPositioned ? box.offsetTop - scrollTop : 0;
+    boxLeft = isPositioned ? rect.left - scrollLeft : 0;
+    boxTop = isPositioned ? rect.top - scrollTop : 0;
 
     distanceX = evX - (boxLeft + dragingElement.offsetLeft);
     distanceY = evY - (boxTop + dragingElement.offsetTop);
