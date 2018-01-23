@@ -42,7 +42,7 @@ Draggable(box, {
 ```
 
 ## Demo
-[http://oodzchen.com/lab/draggablejs/](http://oodzchen.com/lab/draggablejs/)
+[http://oodzchen.github.io/lab/draggablejs/](http://oodzchen.github.io/lab/draggablejs/)
 
 ## Browser Support
 Compatible with major desktop browsers (Firefox, Chrome, IE8+).
